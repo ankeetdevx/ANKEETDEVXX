@@ -1,0 +1,78 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense Ledger Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/project.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Expense Ledger Pro</h1>
+      <a class="btn btn-outline" href="../projects.html">Back to Portfolio</a>
+    </div>
+
+    <div class="card">
+      <div class="grid grid-3">
+        <input id="desc" placeholder="Description" />
+        <select id="type"><option value="income">Income</option><option value="expense">Expense</option></select>
+        <input id="amount" type="number" placeholder="Amount" />
+      </div>
+      <div style="margin-top:0.8rem;"><button id="add">Add Entry</button></div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top:1rem;">
+      <div class="card"><strong>Total Income</strong><div id="income">0</div></div>
+      <div class="card"><strong>Total Expense</strong><div id="expense">0</div></div>
+      <div class="card"><strong>Balance</strong><div id="balance">0</div></div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <table>
+        <thead><tr><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const rows = document.getElementById('rows');
+    const state = [];
+
+    function render() {
+      rows.innerHTML = '';
+      let income = 0;
+      let expense = 0;
+      state.forEach((item) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${item.desc}</td><td>${item.type}</td><td>${item.amount.toFixed(2)}</td>`;
+        rows.appendChild(tr);
+        if (item.type === 'income') income += item.amount;
+        else expense += item.amount;
+      });
+      document.getElementById('income').textContent = income.toFixed(2);
+      document.getElementById('expense').textContent = expense.toFixed(2);
+      document.getElementById('balance').textContent = (income - expense).toFixed(2);
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const desc = document.getElementById('desc').value.trim();
+      const type = document.getElementById('type').value;
+      const amount = Number(document.getElementById('amount').value);
+      if (!desc || amount <= 0) return;
+      state.push({ desc, type, amount });
+      document.getElementById('desc').value = '';
+      document.getElementById('amount').value = '';
+      render();
+    });
+
+    state.push({ desc: 'Opening balance', type: 'income', amount: 25000 });
+    state.push({ desc: 'Office supplies', type: 'expense', amount: 4200 });
+    render();
+  </script>
+</body>
+</html>

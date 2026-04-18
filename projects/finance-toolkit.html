@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance Toolkit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/project.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Finance Toolkit</h1>
+      <a class="btn btn-outline" href="../projects.html">Back to Portfolio</a>
+    </div>
+
+    <div class="grid grid-3">
+      <section class="card">
+        <h3>GST Calculator</h3>
+        <input id="gstBase" type="number" placeholder="Amount" />
+        <input id="gstRate" type="number" placeholder="GST %" value="18" style="margin-top:0.5rem;" />
+        <button style="margin-top:0.6rem;" onclick="calcGST()">Calculate</button>
+        <p id="gstOut"></p>
+      </section>
+
+      <section class="card">
+        <h3>Percentage Tool</h3>
+        <input id="percentPart" type="number" placeholder="Part value" />
+        <input id="percentWhole" type="number" placeholder="Whole value" style="margin-top:0.5rem;" />
+        <button style="margin-top:0.6rem;" onclick="calcPercent()">Calculate</button>
+        <p id="percentOut"></p>
+      </section>
+
+      <section class="card">
+        <h3>EMI Calculator</h3>
+        <input id="loan" type="number" placeholder="Loan amount" />
+        <input id="rate" type="number" placeholder="Annual Interest %" style="margin-top:0.5rem;" />
+        <input id="months" type="number" placeholder="Months" style="margin-top:0.5rem;" />
+        <button style="margin-top:0.6rem;" onclick="calcEmi()">Calculate</button>
+        <p id="emiOut"></p>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function calcGST() {
+      const base = Number(document.getElementById('gstBase').value);
+      const rate = Number(document.getElementById('gstRate').value);
+      if (base <= 0 || rate < 0) return;
+      const gst = (base * rate) / 100;
+      document.getElementById('gstOut').textContent = `GST: ${gst.toFixed(2)} | Total: ${(base + gst).toFixed(2)}`;
+    }
+
+    function calcPercent() {
+      const part = Number(document.getElementById('percentPart').value);
+      const whole = Number(document.getElementById('percentWhole').value);
+      if (whole <= 0) return;
+      document.getElementById('percentOut').textContent = `${((part / whole) * 100).toFixed(2)}%`;
+    }
+
+    function calcEmi() {
+      const p = Number(document.getElementById('loan').value);
+      const annual = Number(document.getElementById('rate').value);
+      const n = Number(document.getElementById('months').value);
+      if (p <= 0 || annual <= 0 || n <= 0) return;
+      const r = annual / 12 / 100;
+      const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      document.getElementById('emiOut').textContent = `Monthly EMI: ${emi.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>

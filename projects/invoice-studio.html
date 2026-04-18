@@ -1,0 +1,87 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoice Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/project.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Invoice Studio</h1>
+      <div>
+        <a class="btn btn-outline" href="../projects.html">Back to Portfolio</a>
+        <button onclick="window.print()">Print</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="grid grid-2">
+        <input id="client" placeholder="Client Name" />
+        <input id="gst" type="number" value="18" placeholder="GST %" />
+      </div>
+      <div class="grid grid-3" style="margin-top:0.8rem;">
+        <input id="item" placeholder="Item" />
+        <input id="qty" type="number" placeholder="Qty" />
+        <input id="price" type="number" placeholder="Unit Price" />
+      </div>
+      <div style="margin-top:0.8rem;"><button id="add">Add Line</button></div>
+    </div>
+
+    <div class="card" style="margin-top:1rem;">
+      <h3 id="title">Invoice for Client</h3>
+      <table>
+        <thead><tr><th>Item</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p><strong>Subtotal:</strong> <span id="subtotal">0.00</span></p>
+      <p><strong>GST:</strong> <span id="gstValue">0.00</span></p>
+      <p><strong>Grand Total:</strong> <span id="grand">0.00</span></p>
+    </div>
+  </div>
+
+  <script>
+    const lines = [];
+    const rows = document.getElementById('rows');
+
+    function render() {
+      rows.innerHTML = '';
+      const client = document.getElementById('client').value.trim();
+      document.getElementById('title').textContent = `Invoice for ${client || 'Client'}`;
+      const gstRate = Number(document.getElementById('gst').value) || 0;
+      let subtotal = 0;
+      lines.forEach((line) => {
+        const total = line.qty * line.price;
+        subtotal += total;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${line.item}</td><td>${line.qty}</td><td>${line.price.toFixed(2)}</td><td>${total.toFixed(2)}</td>`;
+        rows.appendChild(tr);
+      });
+      const gstValue = (subtotal * gstRate) / 100;
+      document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('gstValue').textContent = gstValue.toFixed(2);
+      document.getElementById('grand').textContent = (subtotal + gstValue).toFixed(2);
+    }
+
+    document.getElementById('add').addEventListener('click', () => {
+      const item = document.getElementById('item').value.trim();
+      const qty = Number(document.getElementById('qty').value);
+      const price = Number(document.getElementById('price').value);
+      if (!item || qty <= 0 || price <= 0) return;
+      lines.push({ item, qty, price });
+      document.getElementById('item').value = '';
+      document.getElementById('qty').value = '';
+      document.getElementById('price').value = '';
+      render();
+    });
+
+    document.getElementById('client').addEventListener('input', render);
+    document.getElementById('gst').addEventListener('input', render);
+    render();
+  </script>
+</body>
+</html>

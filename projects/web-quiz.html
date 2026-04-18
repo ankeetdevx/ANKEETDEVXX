@@ -1,0 +1,81 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Dev Quiz App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/project.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Web Dev Quiz App</h1>
+      <a class="btn btn-outline" href="../projects.html">Back to Portfolio</a>
+    </div>
+
+    <div class="card">
+      <h3 id="question">Question</h3>
+      <div class="grid" id="options"></div>
+      <p class="small" id="progress"></p>
+      <button id="next" style="margin-top:0.8rem;">Next</button>
+      <h3 id="result"></h3>
+    </div>
+  </div>
+
+  <script>
+    const quiz = [
+      { q: 'Which tag is used for the largest heading?', opts: ['<h6>', '<h1>', '<head>', '<title>'], ans: 1 },
+      { q: 'Which CSS property controls text size?', opts: ['font-style', 'text-size', 'font-size', 'letter-space'], ans: 2 },
+      { q: 'Which method converts JSON string to object?', opts: ['JSON.parse()', 'JSON.stringify()', 'JSON.object()', 'JSON.convert()'], ans: 0 },
+      { q: 'Which keyword declares a block-scoped variable?', opts: ['var', 'const', 'int', 'define'], ans: 1 }
+    ];
+
+    let idx = 0;
+    let selected = null;
+    let score = 0;
+
+    const qNode = document.getElementById('question');
+    const optionsNode = document.getElementById('options');
+    const progress = document.getElementById('progress');
+    const result = document.getElementById('result');
+
+    function paint() {
+      const item = quiz[idx];
+      qNode.textContent = item.q;
+      optionsNode.innerHTML = '';
+      selected = null;
+      item.opts.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.textContent = opt;
+        b.className = 'btn-outline';
+        b.addEventListener('click', () => {
+          selected = i;
+          [...optionsNode.children].forEach((n) => n.style.outline = 'none');
+          b.style.outline = '3px solid #0f9d9f';
+        });
+        optionsNode.appendChild(b);
+      });
+      progress.textContent = `Question ${idx + 1} of ${quiz.length}`;
+    }
+
+    document.getElementById('next').addEventListener('click', () => {
+      if (selected === null) return;
+      if (selected === quiz[idx].ans) score++;
+      idx++;
+      if (idx >= quiz.length) {
+        qNode.textContent = 'Quiz Completed';
+        optionsNode.innerHTML = '';
+        progress.textContent = '';
+        result.textContent = `Your score: ${score}/${quiz.length}`;
+        return;
+      }
+      paint();
+    });
+
+    paint();
+  </script>
+</body>
+</html>

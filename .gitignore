@@ -1,0 +1,9 @@
+node_modules/
+client/dist/
+dist/
+PPPT/
+node-install*.log
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db

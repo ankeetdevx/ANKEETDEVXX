@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Task Board</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/project.css" />
+  <style>
+    .board { display:grid; grid-template-columns: repeat(3,1fr); gap:1rem; }
+    .lane { background:#fff; border:1px solid #dce4ee; border-radius:14px; padding:0.8rem; min-height:320px; }
+    .task { background:#eef6ff; border:1px solid #c9ddf5; border-radius:10px; padding:0.5rem; margin-bottom:0.5rem; cursor:grab; }
+    .drop { outline:2px dashed #79b2df; }
+    @media (max-width:780px){ .board{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Smart Task Board</h1>
+      <a class="btn btn-outline" href="../projects.html">Back to Portfolio</a>
+    </div>
+    <p class="small">Drag tasks between To Do, In Progress and Done.</p>
+
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="grid grid-2">
+        <input id="taskInput" placeholder="Add task" />
+        <button id="addTask">Add Task</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div class="lane" data-lane="todo"><h3>To Do</h3><div class="tasks"></div></div>
+      <div class="lane" data-lane="progress"><h3>In Progress</h3><div class="tasks"></div></div>
+      <div class="lane" data-lane="done"><h3>Done</h3><div class="tasks"></div></div>
+    </div>
+  </div>
+
+  <script>
+    const lanes = [...document.querySelectorAll('.lane')];
+    const input = document.getElementById('taskInput');
+    const btn = document.getElementById('addTask');
+
+    const seed = {
+      todo: ['Build landing page', 'Prepare monthly report'],
+      progress: ['Fix responsive nav'],
+      done: ['Set up portfolio project']
+    };
+
+    function createTask(text) {
+      const node = document.createElement('div');
+      node.className = 'task';
+      node.draggable = true;
+      node.textContent = text;
+      node.addEventListener('dragstart', () => node.classList.add('dragging'));
+      node.addEventListener('dragend', () => node.classList.remove('dragging'));
+      return node;
+    }
+
+    function mount() {
+      lanes.forEach((lane) => {
+        lane.querySelector('.tasks').innerHTML = '';
+        seed[lane.dataset.lane].forEach((t) => lane.querySelector('.tasks').appendChild(createTask(t)));
+      });
+    }
+
+    btn.addEventListener('click', () => {
+      const value = input.value.trim();
+      if (!value) return;
+      seed.todo.push(value);
+      input.value = '';
+      mount();
+    });
+
+    lanes.forEach((lane) => {
+      lane.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        lane.classList.add('drop');
+      });
+      lane.addEventListener('dragleave', () => lane.classList.remove('drop'));
+      lane.addEventListener('drop', () => {
+        lane.classList.remove('drop');
+        const dragged = document.querySelector('.dragging');
+        if (dragged) lane.querySelector('.tasks').appendChild(dragged);
+      });
+    });
+
+    mount();
+  </script>
+</body>
+</html>
